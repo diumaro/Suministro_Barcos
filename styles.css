@@ -1,0 +1,26 @@
+:root {
+    --primary-color: #1d2946; /* Azul oscuro Vivanta */
+    --secondary-color: #96607D;
+}
+.navbar {
+    background-color: var(--primary-color);
+}
+.card-header {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+.table th {
+    background-color: #f8f9fa;
+}
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+}
