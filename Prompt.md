@@ -54,3 +54,4 @@ Temas a considerar:
 
 ssh -p 8822 admin@192.168.1.35
 password:  nOYYyOWP6OM8
+node ~/suministro-app/server.js

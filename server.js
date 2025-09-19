@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
@@ -6,25 +5,41 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// 1) Servir los ficheros estáticos (index.html, css/, js/, img/)
-app.use(express.static(path.join(__dirname, '.')));
 
-// 2) Proxy hacia el ERP - Token
+
+// --- Proxy para TOKEN ---
 app.use('/api/token', createProxyMiddleware({
   target: 'https://app_lisa.enriel.com',
   changeOrigin: true,
-  pathRewrite: { '^/api/token': '/galileo/lisa/token' }
+  logLevel: 'debug',   // 👈 más detalle en consola
+  pathRewrite: { '^/api/token': '/galileo/lisa/token' },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`➡️  [TOKEN] ${req.method} ${req.originalUrl}`);
+  },
+  onProxyRes: (proxyRes, req, res) => {
+    console.log(`⬅️  [TOKEN] Respuesta ${proxyRes.statusCode}`);
+  }
 }));
 
-// 3) Proxy hacia el ERP - Clientes
+// --- Proxy para CLIENTES ---
 app.use('/api/clientes', createProxyMiddleware({
   target: 'https://app_lisa.enriel.com',
   changeOrigin: true,
-  pathRewrite: { '^/api/clientes': '/galileo/lisa/rest/dinamico/OBTENER_BARCLI' }
+  logLevel: 'debug',
+  pathRewrite: { '^/api/clientes': '/galileo/lisa/rest/dinamico/OBTENER_BARCLI' },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`➡️  [CLIENTES] ${req.method} ${req.originalUrl}`);
+  },
+  onProxyRes: (proxyRes, req, res) => {
+    console.log(`⬅️  [CLIENTES] Respuesta ${proxyRes.statusCode}`);
+  }
 }));
 
-// 4) Iniciar servidor
+// Servir archivos estáticos (HTML, JS, CSS, imágenes)
+app.use(express.static(path.join(__dirname, '.')));
+
+// --- Arrancar servidor ---
 app.listen(PORT, () => {
-  console.log(`✅ Servidor en http://localhost:${PORT}`);
- // console.log(`👉 Abre en tu navegador: http://<IP_NAS>:${PORT}/index.html`);
+  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`👉 Abre en tu navegador: http://<IP_NAS>:${PORT}/index.html`);
 });
